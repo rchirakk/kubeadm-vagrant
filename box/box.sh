@@ -1,21 +1,10 @@
 #!/bin/bash
 set -x
-main(){
-  VAGRANTFILE="Vagrantfile"
-  BOXVMNAME="kubeadmCentosBox"
-  # create config file
-  rm -f $VAGRANTFILE
-  sed -e '0,/VagrantBoxConfiguration/d' -e '0,/VagrantBoxConfiguration/d' $0 > $VAGRANTFILE
-  vagrant destroy -f && vagrant up
-  rm -f ${BOXVMNAME}.tar
-  # create box image
-  vagrant package --base $BOXVMNAME -o ${BOXVMNAME}.tar
-  vagrant destroy -f
-  exit 0 # happy exit
-}
-main $@
   
-#===== VagrantBoxConfiguration ======
+VAGRANTFILE="Vagrantfile"
+BOXVMNAME="kubeadmCentosBox"
+rm -f $VAGRANTFILE
+cat > $VAGRANTFILE <<VAGRANTFILE_END
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
@@ -130,3 +119,10 @@ Vagrant.configure("2") do |config|
   #   apt-get install -y apache2
   # SHELL
 end
+VAGRANTFILE_END
+vagrant destroy -f && vagrant up
+rm -f ${BOXVMNAME}.tar
+# create box image
+vagrant package --base $BOXVMNAME -o ${BOXVMNAME}.tar
+vagrant destroy -f
+rm -f $VAGRANTFILE
