@@ -10,6 +10,7 @@ main(){
   rm -f ${BOXVMNAME}.tar
   # create box image
   vagrant package --base $BOXVMNAME -o ${BOXVMNAME}.tar
+  vagrant destroy -f
   exit 0 # happy exit
 }
 main $@
